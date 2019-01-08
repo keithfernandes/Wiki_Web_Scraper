@@ -32,7 +32,7 @@ rows = parks_table.findAll("tr")
 
 
 # Write the row header to the csv file
-f.write("Park_Name"+","+"Image_Url"+","+"Latitude"+","+"Longitude"+","+"Date_Established"+","+"Area"+","+"No_of_Visitors"+","+"Description"+"\n")
+f.write("Park_Name"+","+"Wiki_Url"+","+"Image_Url"+","+"Latitude"+","+"Longitude"+","+"Date_Established"+","+"Area"+","+"No_of_Visitors"+","+"Description"+"\n")
 
 
 for rowindex,tr in enumerate(rows[1:]):
@@ -48,6 +48,7 @@ for rowindex,tr in enumerate(rows[1:]):
 # For the last table element write to file with newline                 
                      if(index == 6):
                          f.write(td.text.replace(',','').rstrip()+'\n')
+# For the remaining table elements write to file with a comma   
                      else:
                          if(index == 2):      
 # extract location from col at index 2 and split extracted location to latitude and longitude
@@ -55,7 +56,20 @@ for rowindex,tr in enumerate(rows[1:]):
                           print(latlong)
                           f.write(latlong[-2]+','+latlong[-1]+',')
                           print(latlong)
-                         else: 
+                         elif(index==0): 
+                          wiki_link = td.a.get('href')
+                          wiki_link_complete = "https://en.wikipedia.org"+wiki_link
+                          
+                          f.write(td.text.replace(',','').rstrip()+',')
+                          
+                          f.write(wiki_link_complete+",")
+                          
+                          
+                          
+                          
+                          
+                         else:
+                             
                           f.write(td.text.replace(',','').rstrip()+',')
                      
                 except Exception as ex:
@@ -66,24 +80,18 @@ for rowindex,tr in enumerate(rows[1:]):
            
                
              
-          
+def inner_web_page_scraper(wiki_link_complete):
+    
+    urlpage = wiki_link_complete
+    page = urllib.request.urlopen(urlpage)       
+    page_soup = BeautifulSoup(page,'html.parser')
+    
     
 
 
 
 
-'''for product in products :
-     
-    ProductTitles = product.findAll("h2",{"class":"title two-line"})
-    ProductPrices = product.findAll("div",{"class":"price"})
-    
-    try:
-     f.write(ProductTitles[0].a["title"].strip())   
-     f.write(","+ProductPrices[0].b.text.strip()+"\n")
-        
-    except:
-               pass
-'''  
+  
 f.close()  
  
 page.close()
